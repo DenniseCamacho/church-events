@@ -1,0 +1,66 @@
+# Ignore Composer-managed and generated directories
+/vendor/
+/drush/contrib/
+/web/core/
+/web/modules/contrib/
+/web/themes/contrib/
+/web/profiles/contrib/
+/web/libraries/
+
+# Ignore user-uploaded and temporary files
+/web/sites/*/files/
+
+# Ignore local settings and sensitive configuration
+/web/sites/*/settings.local.php
+/web/sites/*/services.yml
+/web/sites/*/development.services.yml
+.env
+.env.local
+.env.*
+
+# Ignore logs, caches, and database dumps
+*.log
+*.cache
+*.tmp
+*.sql
+*.sql.gz
+*.sql.tgz
+
+# Ignore operating system and editor files
+.DS_Store
+Thumbs.db
+Desktop.ini
+.vscode/
+.idea/
+
+# Ignore frontend build artifacts
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+pnpm-debug.log*
+
+# Ignore compiled or built theme and module assets
+/web/themes/*/dist/
+/web/modules/*/dist/
+/web/themes/*/node_modules/
+/web/modules/*/node_modules/
+
+# Ignore DDEV local environment files
+.ddev/
+
+# Ignore backup and temporary files
+*.bak
+*.swp
+*~
+*.swo
+*.old
+
+# Keep important configuration and example files tracked
+!/.gitignore
+!/.gitattributes
+!/web/.htaccess
+!/web/sites/default/default.settings.php
+!/web/sites/default/default.services.yml
+!/web/sites/example.sites.php
