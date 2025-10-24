@@ -89,6 +89,8 @@ class AuthController
         $name  = trim($_POST['name'] ?? '');
         $email = trim($_POST['email'] ?? '');
         $pass  = $_POST['password'] ?? '';
+        $rawRole  = $_POST['role'] ?? 'volunteer';
+
 
         if (!valid_name($name)) {
             return self::view('register', ['error' => 'Name must be between 2 and 120 characters.']);
@@ -104,8 +106,16 @@ class AuthController
         if (User::findByEmail($email)) {
             return self::view('register', ['error' => 'An account with this email already exists.']);
         }
+        
+        $allowedRoles = [
+            'organizer' => 2,
+            'volunteer' => 3,
+        ];
 
-        $created = User::createAutoHandle($name, $email, $pass, 3); // 3 = volunteer
+        // If someone tries to spoof "admin", it just falls back to volunteer.
+        $role_id = $allowedRoles[$rawRole] ?? 3;
+
+        $created = User::registerUser($name, $email, $pass, $role_id);
         if (!$created) {
             return self::view('register', ['error' => 'Could not create account. Please try again.']);
         }

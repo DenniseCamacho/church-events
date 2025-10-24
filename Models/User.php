@@ -27,8 +27,8 @@ class User
         return $row ?: null;
     }
 
-    // NEW: Create user, then auto-generate a safe unique handle.
-    public static function createAutoHandle(string $name, string $email, string $password, int $role_id = 3): ?array
+    // Create user, then auto-generate a safe unique handle.
+    public static function registerUser(string $name, string $email, string $password, int $role_id = 3): ?array
     {
         $hash = password_hash($password, PASSWORD_DEFAULT);
 
