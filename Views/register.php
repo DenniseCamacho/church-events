@@ -22,5 +22,11 @@ start_session_once();
     <label>Password
         <input type="password" name="password" minlength="8" required>
     </label>
+    <br><label for="role">Registering as:</label>
+    <select name="role" id="role" required>
+        <option value="volunteer">Volunteer</option>
+        <option value="organizer">Organizer</option>
+    </select>
+
     <button class="btn">Create account</button>
 </form>
