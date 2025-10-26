@@ -9,7 +9,7 @@ start_session_once();
     <div class="alert alert--error"><?= htmlspecialchars($error) ?></div>
 <?php endif; ?>
 
-<form method="post" action="/churchevents/?route=auth/register">
+<form method="post" action="<?= base_url() ?>/register/submit">
     <?= csrf_field() ?>
     <label>Full name
         <input name="name" required>

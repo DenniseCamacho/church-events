@@ -1,0 +1,28 @@
+#Local .htaccess (XAMPP, folder in htdocs/churchevents):
+RewriteEngine On
+RewriteBase /churchevents/
+
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+RewriteRule ^(.+)$ index.php?route=$1 [QSA,L]
+
+<FilesMatch "(\.env|\.env\.local|\.sql|\.sqlite|composer\.(json|lock)|\.gitignore|\.git|\.DS_Store)$">
+    Require all denied
+</FilesMatch>
+
+Options -Indexes
+
+
+#Production .htaccess (site deployed at *.com root):
+# RewriteEngine On
+# RewriteBase /
+# RewriteCond %{REQUEST_FILENAME} -f [OR]
+# RewriteCond %{REQUEST_FILENAME} -d
+# RewriteRule ^ - [L]
+# RewriteRule ^(.+)$ index.php?route=$1 [QSA,L]
+# <FilesMatch "(\.env|\.env\.local|\.sql|\.sqlite|composer\.(json|lock)|\.gitignore|\.git|\.DS_Store)$">
+#     Require all denied
+# </FilesMatch>
+# Options -Indexes

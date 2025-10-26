@@ -8,7 +8,7 @@ start_session_once();
     <div class="alert alert--error"><?= e($error) ?></div>
 <?php endif; ?>
 
-<form method="post" action="/churchevents/?route=auth/login">
+<form method="post" action="<?= base_url() ?>/login/submit">
     <?= csrf_field() ?>
     <label>Email
         <input type="email" name="email" required>

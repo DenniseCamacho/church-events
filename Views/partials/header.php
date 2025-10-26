@@ -1,16 +1,27 @@
 <?php
-// header.php — top navigation, shared across all pages
+// header.php — top navigation shared across all pages
+// Uses base_url() to generate correct links for both local and production environments
+
 start_session_once();
-$u = current_user();
+
+// Optional helper function that returns the logged-in user array or null
+$u = $_SESSION['user'] ?? null;
+
+
+
 ?>
+
 <nav>
-    <a href="/churchevents/">Home</a>
+    <!-- Home link -->
+    <a href="<?= base_url() ?>/">Home</a>
+
     <?php if ($u): ?>
         · <span>Hello, <?= e($u['handle']) ?></span>
-        · <a href="/churchevents/?route=auth/logout">Logout</a>
+        · <a href="<?= base_url() ?>/logout">Logout</a>
     <?php else: ?>
-        · <a href="/churchevents/?route=auth/login">Login</a>
-        · <a href="/churchevents/?route=auth/register">Register</a>
+        · <a href="<?= base_url() ?>/login">Login</a>
+        · <a href="<?= base_url() ?>/register">Register</a>
     <?php endif; ?>
 </nav>
+
 <hr>
