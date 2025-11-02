@@ -36,7 +36,7 @@ class ChurchController
 
     // LIST CHURCHES
     // Displays list of all churches
-    // Admin and organizer are allowed to see this listing
+
     public static function index()
     {
         self::requireAdminOrOrganizer();
@@ -45,7 +45,7 @@ class ChurchController
 
         self::view('church/index', compact('churches'));
     }
-
+    // CREATE NEW CHURCH
     // Displays the form for creating a new church
     // Only admin can access this form
     public static function createForm()
@@ -103,6 +103,7 @@ class ChurchController
         ]);
     }
 
+    // EDIT EXISTING CHURCH
     // Displays edit form for an existing church
     // Only admin can edit
     public static function editForm()
@@ -148,9 +149,9 @@ class ChurchController
             'city' => trim($_POST['city'] ?? ''),
             'state' => strtoupper(trim($_POST['state'] ?? '')),
             'postal_code' => trim($_POST['postal_code'] ?? ''),
-            'latitude' => $church->latitude,   
-            'longitude' => $church->longitude, 
-            'is_active' => $church->is_active  
+            'latitude' => $church->latitude,
+            'longitude' => $church->longitude,
+            'is_active' => $church->is_active
         ];
 
         // Duplicate prevention on update
@@ -221,6 +222,65 @@ class ChurchController
             'success' => 'Church deleted successfully.',
             'churches' => Church::all()
         ]);
+    }
+
+    // SEARCH CHURCHES (ADMIN AND ORGANIZER)
+
+    public static function search()
+    {
+        self::requireAdminOrOrganizer();
+        $term = trim($_GET['term'] ?? '');
+        $results = Church::searchByName($term);
+        header('Content-Type: application/json');
+        echo json_encode($results);
+        exit;
+    }
+
+    // ORGANIZER CHURCH REQUEST FORM
+
+    public static function requestForm()
+    {
+        self::requireAdminOrOrganizer();
+        self::view('church/request');
+    }
+
+    public static function requestStore()
+    {
+        self::requireAdminOrOrganizer();
+
+        if (!verify_csrf()) {
+            return self::view('church/request', ['error' => 'Invalid form token.']);
+        }
+
+        $name  = trim($_POST['name'] ?? '');
+        $city  = trim($_POST['city'] ?? '');
+        $state = strtoupper(trim($_POST['state'] ?? ''));
+        $notes = trim($_POST['notes'] ?? '');
+
+        if ($name === '') {
+            return self::view('church/request', ['error' => 'Name is required.']);
+        }
+
+        // Save as inactive for admin approval
+        $church = new Church();
+        $church->fill([
+            'name'        => $name,
+            'address1'    => '',
+            'address2'    => '',
+            'city'        => $city,
+            'state'       => $state ?: 'TX',
+            'postal_code' => '',
+            'latitude'    => null,
+            'longitude'   => null,
+            'is_active'   => 0
+        ]);
+        $ok = $church->save();
+
+        if (!$ok) {
+            return self::view('church/request', ['error' => 'Could not save request.']);
+        }
+
+        return self::view('church/request', ['success' => 'Request sent to admin.']);
     }
 
     // Loads the correct view file and passes data to it
