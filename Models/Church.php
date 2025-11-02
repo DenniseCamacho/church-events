@@ -154,6 +154,42 @@ class Church
         return $res['cnt'] > 0;
     }
 
+    // SEARCH BY NAME (FOR ORGANIZER DROPDOWN)
+
+    public static function searchByName(string $term): array
+    {
+        // return active churches only
+        $like = '%' . $term . '%';
+        $stmt = db()->prepare("
+            SELECT id, name
+            FROM churches
+            WHERE is_active = 1 AND name LIKE ?
+            ORDER BY name ASC
+            LIMIT 20
+        ");
+        $stmt->bind_param('s', $like);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $rows = [];
+        while ($row = $res->fetch_assoc()) {
+            $rows[] = $row;
+        }
+        $stmt->close();
+        return $rows;
+    }
+
+    // APPROVED LIST (FOR STATIC SELECT)
+
+    public static function approved(): array
+    {
+        $res = db()->query("SELECT id, name FROM churches WHERE is_active = 1 ORDER BY name ASC");
+        $rows = [];
+        while ($row = $res->fetch_assoc()) {
+            $rows[] = $row;
+        }
+        return $rows;
+    }
+
     // Private helper to make URL-friendly slugs
     private function makeSlug(string $name, string $city, string $state): string
     {

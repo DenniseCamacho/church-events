@@ -11,6 +11,7 @@ require_once __DIR__ . '/../helpers.php';
 
 class ChurchController
 {
+    //ACCESS CONTROL
     // Allow only admin 
     private static function requireAdmin()
     {
@@ -33,6 +34,7 @@ class ChurchController
         }
     }
 
+    // LIST CHURCHES
     // Displays list of all churches
     // Admin and organizer are allowed to see this listing
     public static function index()
