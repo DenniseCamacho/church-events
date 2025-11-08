@@ -108,23 +108,56 @@ switch ($route) {
         break;
 
     // EVENT ROUTES
-    // Admin and organizer can create events
-    // Volunteers can only view and click "I want to volunteer"
-
+    // main events list (role aware: admin=all, organizer=own, volunteer=approved)
     case 'events':
         EventController::index();
         break;
 
+    // public/guest/volunteer can view approved events list
+    case 'events/public':
+        EventController::public();
+        break;
+
+    // create new event (admin + organizer)
     case 'events/create':
         EventController::create();
         break;
 
+    // store new event (admin + organizer)
     case 'events/store':
         EventController::store();
         break;
 
+    // volunteer click (logged in volunteer)
     case 'events/volunteer':
         EventController::volunteer();
+        break;
+
+    case 'events/volunteer_signups':
+        EventController::mySignups();
+        break;
+
+    case 'events/signups':   // organizer/admin view signups for one event
+        EventController::signups();
+        break;
+
+    case 'events/withdraw':
+        EventController::withdraw();
+        break;
+
+    // admin: see pending events
+    case 'events/pending':
+        EventController::pending();
+        break;
+
+    // admin: approve event
+    case 'events/approve':
+        EventController::approve();
+        break;
+
+    // admin: reject event
+    case 'events/reject':
+        EventController::reject();
         break;
 
     // ADMIN USER MANAGEMENT PLACEHOLDER

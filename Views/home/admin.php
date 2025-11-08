@@ -12,6 +12,8 @@ start_session_once();
 <ul>
     <li><a href="<?= base_url() ?>/church/requests">Review Church Requests</a></li>
     <li><a href="<?= base_url() ?>/church">Manage Churches</a></li>
+    <li><a href="<?= base_url() ?>/events/pending">Review Pending Events</a></li>
+    <li><a href="<?= base_url() ?>/events">View All Events</a></li>
+    <li><a href="<?= base_url() ?>/events/public">Public Event Listings</a></li>
     <li><a href="<?= base_url() ?>/admin/manage-users">Manage Users</a></li>
-    <li><a href="<?= base_url() ?>/events">Manage Events</a></li>
 </ul>

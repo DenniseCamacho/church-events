@@ -1,29 +1,66 @@
 <?php
-// layout.php — shared HTML shell for all pages.
+
+start_session_once();
+$user = $_SESSION['user'] ?? null;
+$role = $user['role_id'] ?? 0;
 ?>
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 
 <head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="/churchevents/css/styles.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Church Events | Find Service & Volunteer Opportunities</title>
-    <meta name="description" content="Browse church events, services, and volunteer opportunities in your area.">
+    <meta charset="UTF-8">
+    <title>Church Events</title>
 </head>
 
 <body>
-    <header><?php include __DIR__ . '/partials/header.php'; ?></header>
-    <main class="container">
-        <?php
-        if (isset($viewFile) && file_exists($viewFile)) {
-            require $viewFile;
-        } else {
-            echo "<p>View not found.</p>";
-        }
-        ?>
-    </main>
-    <footer><?php include __DIR__ . '/partials/footer.php'; ?></footer>
+
+    <p>
+        <a href="<?= base_url() ?>/home">Home</a>
+        <?php if ($user): ?>
+            · Hello, <?= e($user['name']) ?>
+            · <a href="<?= base_url() ?>/logout">Logout</a>
+        <?php else: ?>
+            · <a href="<?= base_url() ?>/login">Login</a>
+            · <a href="<?= base_url() ?>/register">Register</a>
+        <?php endif; ?>
+    </p>
+
+    <?php if ($role === 1): ?>
+        <p>
+            <a href="<?= base_url() ?>/church">Churches</a> ·
+            <a href="<?= base_url() ?>/church/requests">Church Requests</a> ·
+            <a href="<?= base_url() ?>/events">Events</a> ·
+            <a href="<?= base_url() ?>/events/pending">Pending Events</a> ·
+            <a href="<?= base_url() ?>/events/public">Public Events</a>
+        </p>
+    <?php elseif ($role === 2): ?>
+        <p>
+            <a href="<?= base_url() ?>/events">My Events</a> ·
+            <a href="<?= base_url() ?>/events/create">Create Event</a> ·
+            <a href="<?= base_url() ?>/church/request">Request Church</a> ·
+            <a href="<?= base_url() ?>/events/public">Public Events</a>
+        </p>
+    <?php elseif ($role === 3): ?>
+        <p>
+            <a href="<?= base_url() ?>/events/public">Upcoming Events</a> ·
+            <a href="<?= base_url() ?>/events/volunteer_signups">My Sign-ups</a>
+        </p>
+    <?php else: ?>
+        <p>
+            <a href="<?= base_url() ?>/events/public">View Events</a>
+        </p>
+    <?php endif; ?>
+
+    <?php
+    // page content
+    if (isset($viewFile) && file_exists($viewFile)) {
+        require $viewFile;
+    } else {
+        echo "View not found.";
+    }
+    ?>
+
+    <p>© <?= date('Y') ?> Church Events</p>
 </body>
 
 </html>

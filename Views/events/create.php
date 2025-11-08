@@ -20,7 +20,7 @@
             <option value="<?= $ch['id'] ?>"><?= htmlspecialchars($ch['name']) ?></option>
         <?php endforeach; ?>
     </select>
-    <p>Church not listed? <a href="<?= base_url() ?>/church/request-form">Request a Church</a></p>
+    <p>Church not listed? <a href="<?= base_url() ?>/church/request">Request a Church</a></p>
     <br>
 
     <label>Start Date/Time *</label><br>

@@ -18,6 +18,11 @@
             <td><?= htmlspecialchars($ev['church_name']) ?></td>
             <td><?= htmlspecialchars($ev['start_datetime']) ?></td>
             <td><?= htmlspecialchars($ev['status']) ?></td>
+            <?php if ($role === 2 || $role === 1): ?>
+                <td>
+                    <a href="<?= base_url() ?>/events/signups?id=<?= $ev['id'] ?>">View Volunteers</a>
+                </td>
+            <?php endif; ?>
         </tr>
     <?php endforeach; ?>
 </table>

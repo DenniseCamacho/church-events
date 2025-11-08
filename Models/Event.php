@@ -61,7 +61,129 @@ class Event
         $stmt->close();
         return $ok;
     }
+    // LIST ALL EVENTS FOR ADMIN WITH COUNTS
 
+    public static function allWithCounts(): array
+    {
+        $sql = "
+            SELECT e.*, c.name AS church_name, u.name AS creator_name,
+                   (SELECT COUNT(*) FROM event_volunteers ev WHERE ev.event_id = e.id) AS volunteer_count
+            FROM events e
+            JOIN churches c ON e.church_id = c.id
+            LEFT JOIN users u ON e.created_by_user_id = u.id
+            ORDER BY e.start_datetime DESC
+        ";
+        $res = db()->query($sql);
+        $list = [];
+        while ($row = $res->fetch_assoc()) {
+            $list[] = $row;
+        }
+        return $list;
+    }
+
+    // LIST APPROVED EVENTS FOR VOLUNTEERS
+
+    public static function allApprovedWithCounts(): array
+    {
+        $sql = "
+            SELECT e.*, c.name AS church_name,
+                   (SELECT COUNT(*) FROM event_volunteers ev WHERE ev.event_id = e.id) AS volunteer_count
+            FROM events e
+            JOIN churches c ON e.church_id = c.id
+            WHERE e.status = 'approved'
+            ORDER BY e.start_datetime DESC
+        ";
+        $res = db()->query($sql);
+        $list = [];
+        while ($row = $res->fetch_assoc()) {
+            $list[] = $row;
+        }
+        return $list;
+    }
+
+    // LIST PENDING EVENTS FOR ADMIN APPROVAL
+
+    public static function pending(): array
+    {
+        $sql = "
+            SELECT e.*, c.name AS church_name, u.name AS creator_name
+            FROM events e
+            JOIN churches c ON e.church_id = c.id
+            LEFT JOIN users u ON e.created_by_user_id = u.id
+            WHERE e.status = 'pending'
+            ORDER BY e.start_datetime DESC
+        ";
+        $res = db()->query($sql);
+        $list = [];
+        while ($row = $res->fetch_assoc()) {
+            $list[] = $row;
+        }
+        return $list;
+    }
+    // get single event with church and creator
+    public static function findWithChurch(int $id): ?array
+    {
+        $stmt = db()->prepare("
+        SELECT e.*, c.name AS church_name
+        FROM events e
+        JOIN churches c ON e.church_id = c.id
+        WHERE e.id = ?
+        LIMIT 1
+    ");
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $row = $res ? $res->fetch_assoc() : null;
+        $stmt->close();
+        return $row ?: null;
+    }
+
+
+    // LIST EVENTS BY CREATOR (ORGANIZER) WITH COUNTS
+
+    public static function byCreatorWithCounts(int $userId): array
+    {
+        $sql = "
+            SELECT e.*, c.name AS church_name,
+                   (SELECT COUNT(*) FROM event_volunteers ev WHERE ev.event_id = e.id) AS volunteer_count
+            FROM events e
+            JOIN churches c ON e.church_id = c.id
+            WHERE e.created_by_user_id = ?
+            ORDER BY e.start_datetime DESC
+        ";
+        $stmt = db()->prepare($sql);
+        $stmt->bind_param('i', $userId);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $list = [];
+        while ($row = $res->fetch_assoc()) {
+            $list[] = $row;
+        }
+        $stmt->close();
+        return $list;
+    }
+
+    // APPROVE EVENT
+
+    public static function approve(int $id): bool
+    {
+        $stmt = db()->prepare("UPDATE events SET status = 'approved' WHERE id = ?");
+        $stmt->bind_param('i', $id);
+        $ok = $stmt->execute();
+        $stmt->close();
+        return $ok;
+    }
+
+    // REJECT EVENT
+
+    public static function reject(int $id): bool
+    {
+        $stmt = db()->prepare("UPDATE events SET status = 'rejected' WHERE id = ?");
+        $stmt->bind_param('i', $id);
+        $ok = $stmt->execute();
+        $stmt->close();
+        return $ok;
+    }
     // get all events for admin
     public static function all(): array
     {

@@ -3,7 +3,6 @@
 // This writes to church_requests on submit
 start_session_once();
 ?>
-
 <h2>Request a Church</h2>
 
 <?php if (!empty($success)): ?>
@@ -14,10 +13,18 @@ start_session_once();
     <p><?= htmlspecialchars($error) ?></p>
 <?php endif; ?>
 
-<form method="POST" action="/churchevents/church/request/store">
+<?php if (!empty($errors) && is_array($errors)): ?>
+    <ul>
+        <?php foreach ($errors as $err): ?>
+            <li><?= htmlspecialchars($err) ?></li>
+        <?php endforeach; ?>
+    </ul>
+<?php endif; ?>
+
+<form method="POST" action="<?= base_url() ?>/church/request/store">
     <?= csrf_field() ?>
 
-    <label>Church Name</label><br>
+    <label>Church Name *</label><br>
     <input type="text" name="church_name" required maxlength="160"
         value="<?= htmlspecialchars($old['church_name'] ?? '') ?>"><br><br>
 
@@ -29,11 +36,11 @@ start_session_once();
     <input type="text" name="address2" maxlength="160"
         value="<?= htmlspecialchars($old['address2'] ?? '') ?>"><br><br>
 
-    <label>City</label><br>
+    <label>City *</label><br>
     <input type="text" name="city" required maxlength="120"
         value="<?= htmlspecialchars($old['city'] ?? '') ?>"><br><br>
 
-    <label>State (2-letter)</label><br>
+    <label>State (2-letter) *</label><br>
     <input type="text" name="state" required maxlength="2"
         value="<?= htmlspecialchars($old['state'] ?? '') ?>"><br><br>
 
@@ -44,4 +51,4 @@ start_session_once();
     <button type="submit">Submit Request</button>
 </form>
 
-<a href="/churchevents/church">Back to Churches</a>
+<p><a href="<?= base_url() ?>/church">Back to Churches</a></p>

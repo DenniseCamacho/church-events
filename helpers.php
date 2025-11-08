@@ -1,10 +1,8 @@
 <?php
 // helpers.php
 // Shared utility functions for sessions, security, validation, and routing
-// Included by all controllers to keep code consistent and safe
 
-// DATABASE CONNECTION
-require_once __DIR__ . '/db.php'; // ensures db() is available for all helpers
+require_once __DIR__ . '/db.php';
 
 // SESSION HELPERS
 function start_session_once(): void
@@ -14,11 +12,16 @@ function start_session_once(): void
     }
 }
 
+// CURRENT USER
+function current_user(): ?array
+{
+    start_session_once();
+    return $_SESSION['user'] ?? null;
+}
+
 // URL HELPERS
 function base_url(): string
 {
-    // Local development: adjust base to match folder name
-    // Production deployment (e.g., urlname.com): return empty string
     $host = $_SERVER['HTTP_HOST'] ?? '';
     if (strpos($host, 'localhost') !== false) {
         return '/churchevents';
@@ -87,7 +90,6 @@ function valid_password(string $password): bool
 // NETWORK HELPERS
 function client_ip_bin(): string
 {
-    // Get IP from REMOTE_ADDR; do not trust proxy headers
     $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
     $bin = @inet_pton($ip);
     if ($bin === false) {
@@ -98,8 +100,6 @@ function client_ip_bin(): string
 
 function email_key(string $email): string
 {
-    // Lowercase and trim for consistent hashing
     $norm = strtolower(trim($email));
-    // Binary output (32 bytes) for SHA-256
     return hash('sha256', $norm, true);
 }
