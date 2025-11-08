@@ -22,7 +22,7 @@
 *.log
 *.cache
 *.tmp
-*.sql
+.sql
 *.sql.gz
 *.sql.tgz
 
